@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 
 // Styling for dark blue background
-const darkBlue = "#003366"; // You can customize this color as needed
+const darkBlue = "#003366"; 
 
 function ModelPage() {
   return (
