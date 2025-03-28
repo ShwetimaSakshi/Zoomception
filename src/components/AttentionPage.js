@@ -33,7 +33,7 @@ function AttentionPage() {
       {/* Content of the AttentionPage */}
       <Container sx={{ mt: 4 }}>
         <Typography variant="h3" gutterBottom>
-          Explore Model
+          Explore Attention
         </Typography>
         <Typography variant="body1" paragraph>
           This page is for exploring the model. Here we can include any content related to the model, its features, and visualizations.
