@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Typography, AppBar, Toolbar, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
+import ClipModelViz from "./ClipModelViz";
 
 // Styling for dark blue background
 const darkBlue = "#003366"; 
@@ -30,6 +31,7 @@ function ModelPage() {
         <Typography variant="body1" paragraph>
           This page is for exploring the model. Here we can include any content related to the model, its features, and visualizations.
         </Typography>
+        <ClipModelViz />
       </Container>
     </div>
   );
