@@ -33,7 +33,7 @@ const Banner = styled(Paper)({
   color: "white",
 });
 
-const feedbackFormUrl = "https://forms.gle/yourGoogleFormLink"; 
+const feedbackFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSf1vy277bfmsvuprtt4aGuJ-_8K2BzmJhewkH5SSy5RvS-22g/viewform?usp=header"; 
 
 function App() {
   return (
