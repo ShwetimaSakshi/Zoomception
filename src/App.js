@@ -33,6 +33,8 @@ const Banner = styled(Paper)({
   color: "white",
 });
 
+const feedbackFormUrl = "https://forms.gle/yourGoogleFormLink"; 
+
 function App() {
   return (
     <Router>
@@ -54,17 +56,58 @@ function AboutPage() {
 
       <Banner elevation={10}>
         <Typography variant="h3" gutterBottom>
-          About Us
+        Welcome!
         </Typography>
-        <Typography variant="body1" paragraph>
-          Welcome to our data visualization platform. Explore models and attention mapping with interactive insights.
+        <Typography variant="h5" paragraph>
+        🔍 Lets explore CLIP Model!
         </Typography>
         <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" color="primary" component={Link} to="/model">
-            Explore Model
+          <Button variant="contained" sx={{
+              color: "white",
+              padding: "12px 24px",
+              textTransform: "none",
+              fontSize: "16px",
+              fontWeight: "bold",
+              '&:hover': {
+                background: "rgb(42, 62, 213)",
+              }
+            }}
+            color="primary" component={Link} to="/model">
+            🧩 Explore Model
           </Button>
-          <Button variant="contained" color="secondary" component={Link} to="/attention">
-            Explore Attention
+          <Button variant="contained" sx={{
+              color: "white",
+              padding: "12px 24px",
+              textTransform: "none",
+              fontSize: "16px",
+              fontWeight: "bold",
+              '&:hover': {
+                background: "rgb(133, 15, 165)",
+              }
+            }}
+            color="secondary" component={Link} to="/attention">
+            📊 Explore Attention
+          </Button>
+        </Box>
+
+        <Box mt={4} display="flex" justifyContent="center">
+        <Button
+            variant="contained"
+            sx={{
+              background: "linear-gradient(45deg, #7F56D9, #4E73DF)", // Funky gradient from purple to blue
+              color: "white",
+              padding: "12px 24px",
+              textTransform: "none",
+              fontSize: "16px",
+              fontWeight: "bold",
+              '&:hover': {
+                background: "linear-gradient(45deg, #6A42A8, #3E63B6)",
+              }
+            }}
+            href={feedbackFormUrl} 
+            target="_blank"
+          >
+            ✍️ Feedback
           </Button>
         </Box>
       </Banner>
