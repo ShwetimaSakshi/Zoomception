@@ -1,0 +1,183 @@
+
+{
+    "name": "CLIP Model",
+    "children": [
+      {
+        "name": "Visual Encoder",
+        "children": [
+          {
+            "name": "ModifiedResNet",
+            "children": [
+              { 
+                "name": "3-layer Stem", 
+                "children": [
+                  { "name": "Conv2d (3→width/2, 3×3, stride=2)" },
+                  { "name": "BatchNorm2d" },
+                  { "name": "ReLU" },
+                  { "name": "Conv2d (width/2→width/2, 3×3)" },
+                  { "name": "BatchNorm2d" },
+                  { "name": "ReLU" },
+                  { "name": "Conv2d (width/2→width, 3×3)" },
+                  { "name": "BatchNorm2d" },
+                  { "name": "ReLU" },
+                  { "name": "AvgPool2d (2×2)" }
+                ]
+              },
+              { 
+                "name": "Layer1 (Bottleneck blocks)",
+                "children": [
+                  {
+                    "name": "Bottleneck",
+                    "children": [
+                      { "name": "Conv2d (1×1)" },
+                      { "name": "BatchNorm2d" },
+                      { "name": "ReLU" },
+                      { "name": "Conv2d (3×3)" },
+                      { "name": "BatchNorm2d" },
+                      { "name": "ReLU" },
+                      { "name": "AvgPool2d (for stride>1)" },
+                      { "name": "Conv2d (1×1, expansion=4)" },
+                      { "name": "BatchNorm2d" },
+                      { "name": "Downsample (if needed)" },
+                      { "name": "ReLU" }
+                    ]
+                  }
+                ]
+              },
+              { "name": "Layer2 (Bottleneck blocks, stride=2)" },
+              { "name": "Layer3 (Bottleneck blocks, stride=2)" },
+              { "name": "Layer4 (Bottleneck blocks, stride=2)" },
+              { 
+                "name": "AttentionPool2d",
+                "children": [
+                  { "name": "Positional Embedding" },
+                  { "name": "Multi-Head Attention" },
+                  { "name": "Projection Layer" }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "VisionTransformer",
+            "children": [
+              { "name": "Patch Embedding (Conv2d, patch_size×patch_size)" },
+              { "name": "Class Token (learnable)" },
+              { "name": "Positional Embedding (learnable)" },
+              { "name": "LayerNorm (Pre)" },
+              { 
+                "name": "Transformer Blocks",
+                "children": [
+                  {
+                    "name": "ResidualAttentionBlock",
+                    "children": [
+                      { 
+                        "name": "Self-Attention",
+                        "children": [
+                          { "name": "LayerNorm" },
+                          { "name": "Multi-Head Attention (num_heads)" },
+                          { "name": "Residual Connection" }
+                        ]
+                      },
+                      {
+                        "name": "MLP",
+                        "children": [
+                          { "name": "LayerNorm" },
+                          { "name": "Linear (d_model→d_model×4)" },
+                          { "name": "QuickGELU Activation (x*sigmoid(1.702*x))" },
+                          { "name": "Linear (d_model×4→d_model)" },
+                          { "name": "Residual Connection" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "name": "LayerNorm (Post)" },
+              { "name": "Projection Layer (width→output_dim)" }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Text Encoder",
+        "children": [
+          { "name": "Token Embedding (vocab_size→transformer_width)" },
+          { "name": "Positional Embedding (context_length×transformer_width)" },
+          {
+            "name": "Transformer",
+            "children": [
+              {
+                "name": "ResidualAttentionBlocks",
+                "children": [
+                  {
+                    "name": "Self-Attention",
+                    "children": [
+                      { "name": "LayerNorm" },
+                      { "name": "Causal Multi-Head Attention (num_heads)" },
+                      { "name": "Residual Connection" }
+                    ]
+                  },
+                  {
+                    "name": "MLP",
+                    "children": [
+                      { "name": "LayerNorm" },
+                      { "name": "Linear (transformer_width→transformer_width×4)" },
+                      { "name": "QuickGELU Activation (x*sigmoid(1.702*x))" },
+                      { "name": "Linear (transformer_width×4→transformer_width)" },
+                      { "name": "Residual Connection" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          { "name": "LayerNorm (Final)" },
+          { "name": "Text Projection (transformer_width→embed_dim)" }
+        ]
+      },
+      {
+        "name": "Multimodal Features",
+        "children": [
+          { "name": "Feature Normalization (L2 Norm)" },
+          { "name": "Logit Scale (learnable temperature parameter)" },
+          { "name": "Cosine Similarity" }
+        ]
+      },
+      {
+        "name": "Training Objective",
+        "children": [
+          { "name": "Contrastive Loss (InfoNCE)" }
+        ]
+      },
+      {
+        "name": "Model Variants",
+        "children": [
+          { 
+            "name": "B/32", 
+            "children": [
+              { "name": "Vision: 87.85M params, 768 hidden size, 12 heads, 12 layers, 16×16 patches" },
+              { "name": "Text: 63.43M params, 512 hidden size, 8 heads, 12 layers" },
+              { "name": "Output dim: 512" }
+            ]
+          },
+          { 
+            "name": "B/16", 
+            "children": [
+              { "name": "Vision: 86.19M params, 768 hidden size, 12 heads, 12 layers, 32×32 patches" },
+              { "name": "Text: 91.16M params, 512 hidden size, 8 heads, 12 layers" },
+              { "name": "Output dim: 512" }
+            ]
+          },
+          { 
+            "name": "L/14", 
+            "children": [
+              { "name": "Vision: 303.97M params, 1024 hidden size, 16 heads, 24 layers, 14×14 patches" },
+              { "name": "Text: 123.65M params, 768 hidden size, 12 heads, 12 layers" },
+              { "name": "Output dim: 768" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
