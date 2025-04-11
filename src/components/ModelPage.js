@@ -29,7 +29,7 @@ function ModelPage() {
           Explore Model
         </Typography>
         <Typography variant="body1" paragraph>
-          This page is for exploring the model. Here we can include any content related to the model, its features, and visualizations.
+          This page is for exploring the model.
         </Typography>
         <ClipModelViz />
       </Container>
