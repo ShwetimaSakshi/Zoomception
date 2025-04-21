@@ -1,116 +1,210 @@
 import React, { useState, useEffect } from "react";
 import {
-  MenuItem,
-  FormControl,
-  Select,
-  InputLabel,
   Box,
+  Select,
+  MenuItem,
   Typography,
+  FormControl,
+  InputLabel,
   Card,
   CardMedia,
-  Alert,
+  Stack,
+  CircularProgress,
+  Paper,
+  IconButton,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search"; // Magnifying glass
+import VisibilityIcon from "@mui/icons-material/Visibility"; // Eye Icon
 
 function MappingPage() {
-  const [dropdown1Value, setDropdown1Value] = useState("");
-  const [dropdown2Value, setDropdown2Value] = useState("");
-  const [error, setError] = useState("");
-
-  const handleDropdown1Change = (event) => {
-    setDropdown1Value(event.target.value);
-  };
-
-  const handleDropdown2Change = (event) => {
-    setDropdown2Value(event.target.value);
-  };
-
-  const customData = [
-    ["Dog Text", "/dog.jpg", "text"],
-    ["Cat Text", "/cat.jpg", "text"],
-  ];
-
-  const imageOptions = {
-    option1: "/dog.jpg",
-    option2: "/cat.jpg",
-  };
-
-  const textOptions = {
-    optionA: "Dog Text",
-    optionB: "Cat Text",
-  };
-
-  const isValidSelection = () => {
-    const selectedImage = imageOptions[dropdown1Value];
-    const selectedText = textOptions[dropdown2Value];
-
-    const matchedItem = customData.find(
-      (item) => item[0] === selectedText && item[1] === selectedImage
-    );
-
-    if (matchedItem) {
-      setError("");
-      return true;
-    } else {
-      setError("Error: The selected image and text do not match.");
-      return false;
-    }
-  };
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedTextIndex, setSelectedTextIndex] = useState(0);
+  const [attentionMaps, setAttentionMaps] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (dropdown1Value && dropdown2Value) {
-      isValidSelection();
-    }
-  }, [dropdown1Value, dropdown2Value]);
+    fetch("/data/attention_results.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setAttentionMaps(data.attention_maps);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load attention maps:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleImageChange = (event) => {
+    const newImageIndex = event.target.value;
+    setSelectedImageIndex(newImageIndex);
+
+    const relatedMaps = attentionMaps.filter(
+      (map) => map.image_index === newImageIndex
+    );
+
+    setSelectedTextIndex(relatedMaps.length > 0 ? relatedMaps[0].text_index : 0);
+  };
+
+  const handleTextChange = (event) => {
+    setSelectedTextIndex(event.target.value);
+  };
+
+  const uniqueImageIndices = [...new Set(attentionMaps.map((map) => map.image_index))];
+  const textOptions = attentionMaps.filter(
+    (map) => map.image_index === selectedImageIndex
+  );
+  const selectedAttentionMap = attentionMaps.find(
+    (map) =>
+      map.image_index === selectedImageIndex &&
+      map.text_index === selectedTextIndex
+  );
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
+
+  if (attentionMaps.length === 0) {
+    return (
+      <Typography variant="h6" color="error" mt={4} align="center">
+        No attention maps found.
+      </Typography>
+    );
+  }
 
   return (
-    <div style={{ position: "relative" }}>
-      <Box>
-        <FormControl fullWidth sx={{ mt: 4 }}>
-          <InputLabel id="dropdown1-label">Select Image</InputLabel>
-          <Select
-            labelId="dropdown1-label"
-            value={dropdown1Value}
-            onChange={handleDropdown1Change}
-            label="Select Image"
-          >
-            <MenuItem value="option1">Dog Text</MenuItem>
-            <MenuItem value="option2">Cat Text</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth sx={{ mt: 4 }}>
-          <InputLabel id="dropdown2-label">Select Text</InputLabel>
-          <Select
-            labelId="dropdown2-label"
-            value={dropdown2Value}
-            onChange={handleDropdown2Change}
-            label="Select Text"
-          >
-            <MenuItem value="optionA">Dog Image</MenuItem>
-            <MenuItem value="optionB">Cat Image</MenuItem>
-          </Select>
-        </FormControl>
-
-        {error && <Alert severity="error">{error}</Alert>}
-
-        {dropdown1Value && dropdown2Value && !error && (
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="h5" gutterBottom>
-              {textOptions[dropdown2Value]}
-            </Typography>
-
-            <Card sx={{ maxWidth: 345, margin: "auto" }}>
-              <CardMedia
-                component="img"
-                height="300"
-                image={imageOptions[dropdown1Value]}
-                alt="Selected Image"
-              />
-            </Card>
+    <Box sx={{ p: 4, maxWidth: 1000, mx: "auto"}}>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: 600,
+          textAlign: "center",
+          // mb: 4,
+          color: "#333",
+        }}
+      >
+        <IconButton
+          sx={{
+            marginLeft: 2,
+            backgroundColor: "#fffff"
+          }}
+        >
+          <Box sx={{ position: 'relative' }}>
+            <SearchIcon sx={{ fontSize: 60, color: "#1976d2" }} />
+            <VisibilityIcon
+              sx={{
+                position: "absolute",
+                top: "40%",
+                left: "40%",
+                transform: "translate(-50%, -50%)",
+                fontSize: 20,
+                color: "#1976d2",
+              }}
+            />
           </Box>
-        )}
-      </Box>
-    </div>
+        </IconButton>
+        Attention mapping viewer {'\n'}
+
+        <Typography
+        variant="h5"
+        sx={{
+          fontSize: "1rem",
+          fontWeight: 100,
+          textAlign: "center",
+          color: "#333",
+        }}
+      >
+       Attention maps are created by computing attention scores that highlight important regions of input. 
+       These scores are visualized as heatmaps, helping to interpret and understand the model's focus, enhancing model transparency and trust.
+       <Box component="span" display="block" marginBottom={2}/>
+       Please select the image and text options to see the attention mappings.
+       <Box component="span" display="block" marginBottom={2}/>
+      </Typography>
+      </Typography>
+
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          borderRadius: 4,
+          mb: 6,
+          backgroundColor: "#fafafa",
+        }}
+      >
+
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={4}>
+          <FormControl fullWidth>
+            <InputLabel>Image</InputLabel>
+            <Select
+              value={selectedImageIndex}
+              label="Image"
+              onChange={handleImageChange}
+            >
+              {uniqueImageIndices.map((index) => (
+                <MenuItem key={index} value={index}>
+                  📷 Image {index}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Text</InputLabel>
+            <Select
+              value={selectedTextIndex}
+              label="Text"
+              onChange={handleTextChange}
+            >
+              {textOptions.map((map) => (
+                <MenuItem key={map.text_index} value={map.text_index}>
+                  📝 {map.text}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+
+        {selectedAttentionMap && (
+        <Stack
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          spacing={4}
+          margin={15}
+        >
+          
+          <Card
+            sx={{
+              transition: "transform 0.35s ease, box-shadow 0.35s ease",
+              borderRadius: 4,
+              overflow: "hidden",
+              "&:hover": {
+                transform: "scale(1.4)",
+                cursor: "zoom-in",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+              },
+            }}
+          >
+            <CardMedia
+              component="img"
+              image={`data:image/png;base64,${selectedAttentionMap.attention_map_base64}`}
+              alt="Attention Map"
+              sx={{
+                width: 500,
+                height: "auto",
+                p: 1,
+              }}
+            />
+          </Card>
+        </Stack>
+      )}
+      </Paper>
+
+    </Box>
   );
 }
 

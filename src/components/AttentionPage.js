@@ -22,7 +22,19 @@ function AttentionPage() {
     <div>
       <AppBar position="sticky" sx={{ backgroundColor: darkBlue }}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" component={Link} to="/" aria-label="home">
+          <IconButton
+          edge="start" 
+          color="inherit" 
+          component={Link} 
+          to="/" 
+          aria-label="home"
+          sx={{ 
+            mr: 2,
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            }
+          }}
+          >
             <HomeIcon />
           </IconButton>
 
