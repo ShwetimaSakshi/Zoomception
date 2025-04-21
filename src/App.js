@@ -27,10 +27,14 @@ const VideoBackground = styled("video")({
 const Banner = styled(Paper)({
   padding: "40px",
   textAlign: "center",
-  background: "rgba(0, 0, 0, 0.7)", // Semi-transparent black background for the banner
-  borderRadius: "15px",
+  background: "rgba(5, 19, 67, 0.68)", // Semi-transparent black background for the banner
+  borderRadius: "100%",
   maxWidth: "600px",
+  height: "420px",
   color: "white",
+  justifyContent: "center",
+  alignItems: "center",
+  alignContent: "center"
 });
 
 const feedbackFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSf1vy277bfmsvuprtt4aGuJ-_8K2BzmJhewkH5SSy5RvS-22g/viewform?usp=header"; 
