@@ -29,7 +29,7 @@ const EmbeddingsPage = () => {
 
         const offset = 20;
 
-        const customDataArray = images.map((item) => [item.metadata.label, item.metadata.url]);
+        const customDataArray = images.map((item) => [item.metadata.label, `data:image/jpeg;base64,${item.metadata.base64}`]);
 
         images.forEach((item) => {
           const [x, y, z] = item.coordinates;
@@ -67,7 +67,7 @@ const EmbeddingsPage = () => {
             z: imageZ,
             mode: "markers",
             type: "scatter3d",
-            text: images.map((item) => [item.metadata.label, item.metadata.url]),
+            text: images.map((item) => [item.metadata.label, `data:image/jpeg;base64,${item.metadata.base64}`]),
             customdata: customDataArray,
             marker: { size: 5, color: "orange" },
             name: "Images",
@@ -133,7 +133,7 @@ const EmbeddingsPage = () => {
             const score = simMatrix[i][j];
             return {
               label: img?.label,
-              imageUrl: img?.url,
+              imageUrl: `data:image/jpeg;base64,${img?.base64}`,
               text: txt,
               score: score,
             };
