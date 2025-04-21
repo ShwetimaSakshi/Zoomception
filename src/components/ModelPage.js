@@ -96,16 +96,6 @@ function ModelPage() {
               mb: 3,
               fontSize: '1.8rem !important',
               position: 'relative',
-              // '&:after': {
-              //   content: '""',
-              //   position: 'absolute',
-              //   bottom: '-8px',
-              //   left: 0,
-              //   width: '60px',
-              //   height: '4px',
-              //   backgroundColor: theme.palette.secondary.main,
-              //   borderRadius: '2px'
-              // }
             }}
           >
             Exploring OpenAI's CLIP: A Visual Journey
@@ -117,6 +107,7 @@ function ModelPage() {
         </Container>
       </div>
     </ThemeProvider>
+
   );
 }
 
