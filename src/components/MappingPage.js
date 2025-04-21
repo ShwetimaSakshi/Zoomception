@@ -91,7 +91,7 @@ function MappingPage() {
           sx={{
             marginLeft: 2,
             backgroundColor: "#fffff"
-          }} Attention Map Viewer
+          }}
         >
           <Box sx={{ position: 'relative' }}>
             <SearchIcon sx={{ fontSize: 60, color: "#1976d2" }} />
@@ -107,7 +107,23 @@ function MappingPage() {
             />
           </Box>
         </IconButton>
-        Attention mapping viewer
+        Attention mapping viewer {'\n'}
+
+        <Typography
+        variant="h5"
+        sx={{
+          fontSize: "1rem",
+          fontWeight: 100,
+          textAlign: "center",
+          color: "#333",
+        }}
+      >
+       Attention maps are created by computing attention scores that highlight important regions of input. 
+       These scores are visualized as heatmaps, helping to interpret and understand the model's focus, enhancing model transparency and trust.
+       <Box component="span" display="block" marginBottom={2}/>
+       Please select the image and text options to see the attention mappings.
+       <Box component="span" display="block" marginBottom={2}/>
+      </Typography>
       </Typography>
 
       <Paper
@@ -119,9 +135,6 @@ function MappingPage() {
           backgroundColor: "#fafafa",
         }}
       >
-        <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-          Select Options
-        </Typography>
 
         <Stack direction={{ xs: "column", sm: "row" }} spacing={4}>
           <FormControl fullWidth>
