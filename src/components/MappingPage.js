@@ -20,17 +20,28 @@ function MappingPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTextIndex, setSelectedTextIndex] = useState(0);
   const [attentionMaps, setAttentionMaps] = useState([]);
+  const [similarityMatrix, setSimilarityMatrix] = useState([]);
+  const [indexMap, setIndexMap] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/data/attention_results.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setAttentionMaps(data.attention_maps);
+    // Fetch the attention results, similarity matrix, and index mapping
+    Promise.all([
+      fetch("/data/attention_results.json"),
+      fetch("/data/similarity_matrix.json"),
+      fetch("/data/index_mapping.json"),
+    ])
+      .then(([attentionRes, simMatrixRes, indexMapRes]) =>
+        Promise.all([attentionRes.json(), simMatrixRes.json(), indexMapRes.json()])
+      )
+      .then(([attentionData, simMatrixData, indexMapData]) => {
+        setAttentionMaps(attentionData.attention_maps);
+        setSimilarityMatrix(simMatrixData);
+        setIndexMap(indexMapData);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Failed to load attention maps:", error);
+        console.error("Failed to load data:", error);
         setLoading(false);
       });
   }, []);
@@ -60,6 +71,9 @@ function MappingPage() {
       map.text_index === selectedTextIndex
   );
 
+  // Find the similarity score from the similarity matrix
+  const similarityScore = similarityMatrix[selectedImageIndex]?.[selectedTextIndex];
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
@@ -77,13 +91,12 @@ function MappingPage() {
   }
 
   return (
-    <Box sx={{ p: 4, maxWidth: 1000, mx: "auto"}}>
+    <Box sx={{ p: 4, maxWidth: 1000, mx: "auto" }}>
       <Typography
         variant="h5"
         sx={{
           fontWeight: 600,
           textAlign: "center",
-          // mb: 4,
           color: "#333",
         }}
       >
@@ -107,23 +120,22 @@ function MappingPage() {
             />
           </Box>
         </IconButton>
-        Attention mapping viewer {'\n'}
-
+        Attention mapping viewer
         <Typography
-        variant="h5"
-        sx={{
-          fontSize: "1rem",
-          fontWeight: 100,
-          textAlign: "center",
-          color: "#333",
-        }}
-      >
-       Attention maps are created by computing attention scores that highlight important regions of input. 
-       These scores are visualized as heatmaps, helping to interpret and understand the model's focus, enhancing model transparency and trust.
-       <Box component="span" display="block" marginBottom={2}/>
-       Please select the image and text options to see the attention mappings.
-       <Box component="span" display="block" marginBottom={2}/>
-      </Typography>
+          variant="h5"
+          sx={{
+            fontSize: "1rem",
+            fontWeight: 100,
+            textAlign: "center",
+            color: "#333",
+          }}
+        >
+          Attention maps are created by computing attention scores that highlight important regions of input.
+          These scores are visualized as heatmaps, helping to interpret and understand the model's focus, enhancing model transparency and trust.
+          <Box component="span" display="block" marginBottom={2}/>
+          Please select the image and text options to see the attention mappings.
+          <Box component="span" display="block" marginBottom={2}/>
+        </Typography>
       </Typography>
 
       <Paper
@@ -135,7 +147,6 @@ function MappingPage() {
           backgroundColor: "#fafafa",
         }}
       >
-
         <Stack direction={{ xs: "column", sm: "row" }} spacing={4}>
           <FormControl fullWidth>
             <InputLabel>Image</InputLabel>
@@ -169,41 +180,44 @@ function MappingPage() {
         </Stack>
 
         {selectedAttentionMap && (
-        <Stack
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          spacing={4}
-          margin={15}
-        >
-          
-          <Card
-            sx={{
-              transition: "transform 0.35s ease, box-shadow 0.35s ease",
-              borderRadius: 4,
-              overflow: "hidden",
-              "&:hover": {
-                transform: "scale(1.4)",
-                cursor: "zoom-in",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-              },
-            }}
+          <Stack
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={4}
+            margin={15}
           >
-            <CardMedia
-              component="img"
-              image={`data:image/png;base64,${selectedAttentionMap.attention_map_base64}`}
-              alt="Attention Map"
+            <Card
               sx={{
-                width: 500,
-                height: "auto",
-                p: 1,
+                transition: "transform 0.35s ease, box-shadow 0.35s ease",
+                borderRadius: 4,
+                overflow: "hidden",
+                "&:hover": {
+                  transform: "scale(1.4)",
+                  cursor: "zoom-in",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                },
               }}
-            />
-          </Card>
-        </Stack>
-      )}
+            >{/* Display Similarity Score */}
+            <Typography variant="body1" color="textPrimary" align="center" padding={2}>
+              Similarity Score: {similarityScore ? similarityScore.toFixed(4) : "N/A"}
+            </Typography>
+              <CardMedia
+                component="img"
+                image={`data:image/png;base64,${selectedAttentionMap.attention_map_base64}`}
+                alt="Attention Map"
+                sx={{
+                  width: 500,
+                  height: "auto",
+                  p: 1,
+                  padding: "20px"
+                }}
+              />
+              
+            </Card>
+          </Stack>
+        )}
       </Paper>
-
     </Box>
   );
 }
