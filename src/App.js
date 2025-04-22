@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { Typography, Button, Box, Paper } from "@mui/material";
+import { Typography, Button, Box, Paper, Stack } from "@mui/material";
 import { styled } from "@mui/system";
 import videoBackground from "./assets/video.mp4"; // Import the video
 import ModelPage from "./components/ModelPage";
@@ -53,70 +53,87 @@ function App() {
 
 function AboutPage() {
   return (
-    <Background>
-      <VideoBackground autoPlay loop muted>
-        <source src={videoBackground} type="video/mp4" />
-      </VideoBackground>
+    <div>
+      <Background>
+        <VideoBackground autoPlay loop muted>
+          <source src={videoBackground} type="video/mp4" />
+        </VideoBackground>
 
-      <Banner elevation={10}>
-        <Typography variant="h3" gutterBottom>
-        Welcome!
-        </Typography>
-        <Typography variant="h5" paragraph>
-        🔍 Lets explore CLIP Model!
-        </Typography>
-        <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" sx={{
-              color: "white",
-              padding: "12px 24px",
-              textTransform: "none",
-              fontSize: "16px",
-              fontWeight: "bold",
-              '&:hover': {
-                background: "rgb(42, 62, 213)",
-              }
-            }}
-            color="primary" component={Link} to="/model">
-            🧩 Explore Model
-          </Button>
-          <Button variant="contained" sx={{
-              color: "white",
-              padding: "12px 24px",
-              textTransform: "none",
-              fontSize: "16px",
-              fontWeight: "bold",
-              '&:hover': {
-                background: "rgb(133, 15, 165)",
-              }
-            }}
-            color="secondary" component={Link} to="/attention">
-            📊 Explore Attention
-          </Button>
-        </Box>
+        <Stack alignItems="center">
+          <Banner elevation={10}>
+            <Typography variant="h3" gutterBottom>
+              Welcome!
+            </Typography>
+              
+            <Typography variant="body1" sx={{maxWidth: "400px"}}>
+              This platform is built to help you <strong>explore, understand, and interact</strong> with CLIP model.
+              Help us make this system smarter, clearer, and more useful by sharing your feedback.
+            </Typography>
+            <Box mt={4} display="flex" justifyContent="center" gap={2}>
+              <Button
+                variant="contained"
+                sx={{
+                  color: "white",
+                  padding: "12px 24px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  '&:hover': {
+                    background: "rgb(42, 62, 213)",
+                  }
+                }}
+                color="primary"
+                component={Link}
+                to="/model"
+              >
+                🧩 Explore Model
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  color: "white",
+                  padding: "12px 24px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  '&:hover': {
+                    background: "rgb(133, 15, 165)",
+                  }
+                }}
+                color="secondary"
+                component={Link}
+                to="/attention"
+              >
+                📊 Explore Attention
+              </Button>
+            </Box>
 
-        <Box mt={4} display="flex" justifyContent="center">
-        <Button
-            variant="contained"
-            sx={{
-              background: "linear-gradient(45deg, #7F56D9, #4E73DF)", // Funky gradient from purple to blue
-              color: "white",
-              padding: "12px 24px",
-              textTransform: "none",
-              fontSize: "16px",
-              fontWeight: "bold",
-              '&:hover': {
-                background: "linear-gradient(45deg, #6A42A8, #3E63B6)",
-              }
-            }}
-            href={feedbackFormUrl} 
-            target="_blank"
-          >
-            ✍️ Feedback
-          </Button>
-        </Box>
-      </Banner>
-    </Background>
+            <Box mt={4} display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                sx={{
+                  background: "linear-gradient(45deg, #7F56D9, #4E73DF)",
+                  color: "white",
+                  padding: "12px 24px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  '&:hover': {
+                    background: "linear-gradient(45deg, #6A42A8, #3E63B6)",
+                  }
+                }}
+                href={feedbackFormUrl}
+                target="_blank"
+              >
+                ✍️ Feedback
+              </Button>
+            </Box>
+          </Banner>
+        </Stack>
+      </Background>
+    </div>
   );
 }
+
 
 export default App;
